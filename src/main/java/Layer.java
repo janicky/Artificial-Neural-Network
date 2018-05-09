@@ -33,6 +33,10 @@ public class Layer {
         return Collections.unmodifiableList(neurons);
     }
 
+    public int getNeuronsCount() {
+        return neurons.size();
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Layer: " + Integer.toString(id) + "\n");
