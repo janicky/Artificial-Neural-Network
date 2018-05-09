@@ -32,7 +32,7 @@ public class Neurone {
         return "Neurone: " + Integer.toString(layer) + ":" + Integer.toString(id);
     }
 
-    public double output() {
-        return 0.0;
+    public double getResult(double input) {
+        return input;
     }
 }
