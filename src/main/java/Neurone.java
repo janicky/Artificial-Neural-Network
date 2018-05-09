@@ -4,6 +4,7 @@ public class Neurone {
     private int layer;
     private static int index = 0;
     private int id;
+    private double input;
 
     public Neurone(Perceptron perceptron) {
         this.id = Neurone.index++;
@@ -23,12 +24,17 @@ public class Neurone {
         return perceptron.getWeights()[layer][id][weight_id];
     }
 
+    public double getInput() {
+        return input;
+    }
+
     public int getInputsCount() {
         return perceptron.getWeights()[layer][id].length;
     }
 
     public double getResult(double input) {
-        return perceptron.function(input);
+        this.input = input;
+        return Perceptron.function(input);
     }
 
     @Override
