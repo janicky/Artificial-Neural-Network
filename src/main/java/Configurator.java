@@ -8,6 +8,7 @@ public class Configurator {
     private List<Integer> layers = new ArrayList<Integer>();
     private double range_min = -0.5;
     private double range_max = 0.5;
+    private double learning_factor = 1;
     private Random random = new Random();
 
     public Configurator() {}
@@ -32,6 +33,10 @@ public class Configurator {
 
     public void setRange_max(double range_max) {
         this.range_max = range_max;
+    }
+
+    public double getLearningFactor() {
+        return learning_factor;
     }
 
     public double randWeight() {
