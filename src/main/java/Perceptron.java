@@ -7,17 +7,20 @@ public class Perceptron {
     private Configurator cfg;
     private List<Layer> layers = new ArrayList<Layer>();
     private List<Number> input = new ArrayList<Number>();
+    private List<Number> expected = new ArrayList<Number>();
     private double[][][] weights;
 
-    public Perceptron(Configurator cfg, List<Number> input) {
+    public Perceptron(Configurator cfg, List<Number> input, List<Number> expected) {
         this.cfg = cfg;
         this.input = input;
+        this.expected = expected;
         initialize();
     }
 
-    public Perceptron(Configurator cfg, Double[] input) {
+    public Perceptron(Configurator cfg, Double[] input, Double[] expected) {
         this.cfg = cfg;
         this.input = new ArrayList<Number>(Arrays.asList(input));
+        this.expected = new ArrayList<Number>(Arrays.asList(expected));
         initialize();
     }
 
