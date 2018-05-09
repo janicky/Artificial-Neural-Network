@@ -19,20 +19,21 @@ public class Configurator {
         }
     }
 
-    public double getRange_min() {
+    public double getRangeMin() {
         return range_min;
     }
 
-    public void setRange_min(double range_min) {
-        this.range_min = range_min;
-    }
-
-    public double getRange_max() {
+    public double getRangeMax() {
         return range_max;
     }
 
-    public void setRange_max(double range_max) {
+    public void setRange(double range_min, double range_max) {
+        this.range_min = range_min;
         this.range_max = range_max;
+    }
+
+    public void setLearningFactor(double learning_factor) {
+        this.learning_factor = learning_factor;
     }
 
     public double getLearningFactor() {
