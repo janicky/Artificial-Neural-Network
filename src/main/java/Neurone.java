@@ -27,12 +27,16 @@ public class Neurone {
         return perceptron.getWeights()[layer][id].length;
     }
 
+    public double getResult(double input) {
+        return input;
+    }
+
     @Override
     public String toString() {
         return "Neurone: " + Integer.toString(layer) + ":" + Integer.toString(id);
     }
 
-    public double getResult(double input) {
-        return input;
+    public boolean equals(Neurone n) {
+        return id == n.getId();
     }
 }
