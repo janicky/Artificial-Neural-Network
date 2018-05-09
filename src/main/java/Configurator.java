@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Configurator {
 
     private List<Integer> layers = new ArrayList<Integer>();
+    private double range_min = -0.5;
+    private double range_max = 0.5;
+    private Random random = new Random();
 
     public Configurator() {}
 
@@ -12,6 +16,26 @@ public class Configurator {
         for(int neurons : layers) {
             this.layers.add(neurons);
         }
+    }
+
+    public double getRange_min() {
+        return range_min;
+    }
+
+    public void setRange_min(double range_min) {
+        this.range_min = range_min;
+    }
+
+    public double getRange_max() {
+        return range_max;
+    }
+
+    public void setRange_max(double range_max) {
+        this.range_max = range_max;
+    }
+
+    public double randWeight() {
+        return range_min + (range_max - range_min) * random.nextDouble();
     }
 
     public void addLayer(int neurons) {

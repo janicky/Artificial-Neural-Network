@@ -18,4 +18,11 @@ class ConfiguratorTest {
         assertEquals(3, cfg.getLayersCount());
     }
 
+    @Test
+    void randWeight() {
+        Configurator cfg = new Configurator(new int[]{ 2 });
+        assertTrue(cfg.randWeight() >= -0.5);
+        assertTrue(cfg.randWeight() <= 0.5);
+    }
+
 }
