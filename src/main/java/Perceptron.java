@@ -6,28 +6,27 @@ public class Perceptron {
 
     private Configurator cfg;
     private List<Layer> layers = new ArrayList<Layer>();
-    private List<Double> input = new ArrayList<Double>();
-    private List<Double> expected = new ArrayList<Double>();
+    private double[] input;
+    private double[] expected;
     private double[][][] weights;
     private double[][] outputs;
+    private double[] results;
+    private double b0;
 
-    public Perceptron(Configurator cfg, List<Double> input, List<Double> expected) {
+    public Perceptron(Configurator cfg, double[] input, double[] expected) {
         this.cfg = cfg;
         this.input = input;
         this.expected = expected;
         initialize();
     }
 
-    public Perceptron(Configurator cfg, Double[] input, Double[] expected) {
-        this.cfg = cfg;
-        this.input = new ArrayList<Double>(Arrays.asList(input));
-        this.expected = new ArrayList<Double>(Arrays.asList(expected));
-        initialize();
-    }
-
     private void initialize() {
+//        Initialize layers with neurons
+        for (int neurons : cfg.getLayers()) {
+            layers.add(new Layer(generateNeurons(neurons)));
+        }
 //        Prepare weights matrix
-        weights = cfg.getWeightsMatrix(input.size());
+        weights = cfg.getWeightsMatrix(input.length);
 //        Rand weights
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
@@ -37,7 +36,17 @@ public class Perceptron {
             }
         }
 //        Prepare matrix with inputs
-        outputs = cfg.getOutputsMatrix(input.size());
+        outputs = cfg.getOutputsMatrix(input.length);
+//        Initialize results array
+        results = new double[layers.get(layers.size() - 1).getNeuronsCount()];
+    }
+
+    public static double function(double x) {
+        return 1d / (1 + Math.pow(Math.E, -x));
+    }
+
+    public static double derivative(double x) {
+        return Math.pow(Math.E, -x) / Math.pow(1 + Math.pow(Math.E, -x), 2);
     }
 
     private List<Neurone> generateNeurons(int count) {
@@ -58,37 +67,56 @@ public class Perceptron {
     }
 
     public void epoch() {
-//        Input to array
-        double[] input_array = new double[input.size()];
-        for (int i = 0; i < input.size(); i++) {
-            input_array[i] = input.get(i);
-        }
-        outputs[0] = input_array;
-
-//        Neurons instances
-        for (int neurons : cfg.getLayers()) {
-            layers.add(new Layer(generateNeurons(neurons)));
-        }
+//        Assign input as first output
+        outputs[0] = input;
 
 //        Iterate layers
         for (Layer layer : layers) {
-            System.out.println("Layer #" + Integer.toString(layer.getId()));
-            System.out.println("--------------------------------------");
             for (Neurone neurone : layer.getNeurons()) {
-                System.out.println("Neurone #" + Integer.toString(neurone.getId()));
                 double sum = 0;
                 for (int i = 0; i < outputs[layer.getId()].length; i++) {
-                    System.out.println(Double.toString(outputs[layer.getId()][i]) + " x " + Double.toString(weights[layer.getId()][neurone.getId()][i]));
                     sum += outputs[layer.getId()][i] * weights[layer.getId()][neurone.getId()][i];
                 }
-                outputs[layer.getId() + 1][neurone.getId()] = sum;
-                System.out.println("|--------------------");
-                System.out.println(Double.toString(sum));
-                System.out.println();
+                outputs[layer.getId() + 1][neurone.getId()] = neurone.getResult(sum);
             }
-            System.out.println();
         }
 
-        System.out.println(Arrays.deepToString(outputs));
+//        Call Backpropagation
+        backpropagation();
+
+//        Assign results
+        results = outputs[outputs.length - 1];
+    }
+
+    private void backpropagation() {
+//        Iterate layers in reverse order
+        for (int l = layers.size() - 1; l >= 0; l--) {
+            Layer layer = layers.get(l);
+            for (int n = 0; n < layer.getNeuronsCount(); n++) {
+                Neurone neurone = layer.getNeurone(n);
+                for (int w = 0; w < weights[l][n].length; w++) {
+//                    Delta calculation
+                    weights[l][n][w] += weightCorrection(layer, neurone, w);
+                }
+            }
+        }
+    }
+
+    private double weightCorrection(Layer layer, Neurone neurone, int weight) {
+        int l = layer.getId(), n = neurone.getId();
+        double b = 0;
+        if (l == layers.size() - 1) {
+            b = (results[n] - expected[n]) * derivative(neurone.getInput());
+            b0 = b;
+        } else {
+            for (int i = 0; i < weights[l][n].length; i++) {
+                b += b0 * weights[l][n][i];
+            }
+        }
+        return -cfg.getLearningFactor() * b * outputs[l][weight];
+    }
+
+    public double[] getResults() {
+        return results;
     }
 }
