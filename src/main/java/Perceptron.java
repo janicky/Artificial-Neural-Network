@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Perceptron {
@@ -12,6 +13,12 @@ public class Perceptron {
         this.cfg = cfg;
         this.input = input;
         weights = cfg.getWeightsMatrix(input.size());
+    }
+
+    public Perceptron(Configurator cfg, Double[] input) {
+        this.cfg = cfg;
+        this.input = new ArrayList<Number>(Arrays.asList(input));
+        weights = cfg.getWeightsMatrix(this.input.size());
     }
 
     private List<Neurone> generateNeurons(int count) {
@@ -32,6 +39,10 @@ public class Perceptron {
                 System.out.println(neurone.toString() + " - " + neurone.getInputsCount());
             }
         }
+    }
+
+    public void setWeight(int layer, int neurone, int weight, double value) {
+        weights[layer][neurone][weight] = value;
     }
 
     public double[][][] getWeights() {
