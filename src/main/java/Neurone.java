@@ -1,18 +1,38 @@
 public class Neurone {
 
-    private static int index = 1;
+    private Perceptron perceptron;
+    private int layer;
+    private static int index = 0;
     private int id;
 
-    public Neurone() {
+    public Neurone(Perceptron perceptron) {
         this.id = Neurone.index++;
+        this.perceptron = perceptron;
+        this.layer = Layer.getIndex();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public static void resetIndex() {
-        Neurone.index = 1;
+        Neurone.index = 0;
+    }
+
+    public double getWeight(int weight_id) {
+        return perceptron.getWeights()[layer][id][weight_id];
+    }
+
+    public int getInputsCount() {
+        return perceptron.getWeights()[layer][id].length;
     }
 
     @Override
     public String toString() {
-        return "Neurone: " + Integer.toString(id);
+        return "Neurone: " + Integer.toString(layer) + ":" + Integer.toString(id);
+    }
+
+    public double output() {
+        return 0.0;
     }
 }
