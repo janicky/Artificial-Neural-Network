@@ -11,7 +11,7 @@ class NeuroneTest {
     @BeforeEach
     void createPerceptron() {
         Configurator cfg = new Configurator(new int[] { 1, 2, 3 });
-        perceptron = new Perceptron(cfg, new Double[] { 0.5, 0d });
+        perceptron = new Perceptron(cfg, new Double[] { 0.5, 0d }, new Double[] { 0d, 1d });
     }
 
 
