@@ -28,7 +28,7 @@ public class Neurone {
     }
 
     public double getResult(double input) {
-        return input;
+        return perceptron.function(input);
     }
 
     @Override
