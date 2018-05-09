@@ -12,13 +12,26 @@ public class Perceptron {
     public Perceptron(Configurator cfg, List<Number> input) {
         this.cfg = cfg;
         this.input = input;
-        weights = cfg.getWeightsMatrix(input.size());
+        initialize();
     }
 
     public Perceptron(Configurator cfg, Double[] input) {
         this.cfg = cfg;
         this.input = new ArrayList<Number>(Arrays.asList(input));
-        weights = cfg.getWeightsMatrix(this.input.size());
+        initialize();
+    }
+
+    private void initialize() {
+//        Prepare weights matrix
+        weights = cfg.getWeightsMatrix(input.size());
+//        Rand weights
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
+                    weights[i][j][k] = cfg.randWeight();
+                }
+            }
+        }
     }
 
     private List<Neurone> generateNeurons(int count) {
@@ -30,22 +43,23 @@ public class Perceptron {
         return neurons;
     }
 
-    public void init() {
-        for (int neurons : cfg.getLayers()) {
-            layers.add(new Layer(generateNeurons(neurons)));
-        }
-        for (Layer layer : layers) {
-            for (Neurone neurone : layer.getNeurons()) {
-                System.out.println(neurone.toString() + " - " + neurone.getInputsCount());
-            }
-        }
-    }
-
     public void setWeight(int layer, int neurone, int weight, double value) {
         weights[layer][neurone][weight] = value;
     }
 
     public double[][][] getWeights() {
         return weights;
+    }
+
+    public void start() {
+        for (int neurons : cfg.getLayers()) {
+            layers.add(new Layer(generateNeurons(neurons)));
+        }
+        for (Layer layer : layers) {
+            System.out.println("Layer #" + Integer.toString(layer.getId()));
+            for (Neurone neurone : layer.getNeurons()) {
+
+            }
+        }
     }
 }
