@@ -6,11 +6,12 @@ public class Perceptron {
 
     private Configurator cfg;
     private List<Layer> layers = new ArrayList<Layer>();
-    private List<Number> input = new ArrayList<Number>();
-    private List<Number> expected = new ArrayList<Number>();
+    private List<Double> input = new ArrayList<Double>();
+    private List<Double> expected = new ArrayList<Double>();
     private double[][][] weights;
+    private double[][] outputs;
 
-    public Perceptron(Configurator cfg, List<Number> input, List<Number> expected) {
+    public Perceptron(Configurator cfg, List<Double> input, List<Double> expected) {
         this.cfg = cfg;
         this.input = input;
         this.expected = expected;
@@ -19,8 +20,8 @@ public class Perceptron {
 
     public Perceptron(Configurator cfg, Double[] input, Double[] expected) {
         this.cfg = cfg;
-        this.input = new ArrayList<Number>(Arrays.asList(input));
-        this.expected = new ArrayList<Number>(Arrays.asList(expected));
+        this.input = new ArrayList<Double>(Arrays.asList(input));
+        this.expected = new ArrayList<Double>(Arrays.asList(expected));
         initialize();
     }
 
@@ -35,6 +36,8 @@ public class Perceptron {
                 }
             }
         }
+//        Prepare matrix with inputs
+        outputs = cfg.getOutputsMatrix(input.size());
     }
 
     private List<Neurone> generateNeurons(int count) {
@@ -54,15 +57,38 @@ public class Perceptron {
         return weights;
     }
 
-    public void start() {
+    public void epoch() {
+//        Input to array
+        double[] input_array = new double[input.size()];
+        for (int i = 0; i < input.size(); i++) {
+            input_array[i] = input.get(i);
+        }
+        outputs[0] = input_array;
+
+//        Neurons instances
         for (int neurons : cfg.getLayers()) {
             layers.add(new Layer(generateNeurons(neurons)));
         }
+
+//        Iterate layers
         for (Layer layer : layers) {
             System.out.println("Layer #" + Integer.toString(layer.getId()));
+            System.out.println("--------------------------------------");
             for (Neurone neurone : layer.getNeurons()) {
-
+                System.out.println("Neurone #" + Integer.toString(neurone.getId()));
+                double sum = 0;
+                for (int i = 0; i < outputs[layer.getId()].length; i++) {
+                    System.out.println(Double.toString(outputs[layer.getId()][i]) + " x " + Double.toString(weights[layer.getId()][neurone.getId()][i]));
+                    sum += outputs[layer.getId()][i] * weights[layer.getId()][neurone.getId()][i];
+                }
+                outputs[layer.getId() + 1][neurone.getId()] = sum;
+                System.out.println("|--------------------");
+                System.out.println(Double.toString(sum));
+                System.out.println();
             }
+            System.out.println();
         }
+
+        System.out.println(Arrays.deepToString(outputs));
     }
 }
