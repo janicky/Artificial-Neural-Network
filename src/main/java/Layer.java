@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Layer {
 
@@ -27,6 +28,12 @@ public class Layer {
 
     public static void resetIndex() {
         index = 0;
+    }
+
+    public Neurone getNeurone(int id) {
+        return neurons.stream()
+                .filter(item -> item.getId() == id)
+                .findFirst().get();
     }
 
     public List<Neurone> getNeurons() {
