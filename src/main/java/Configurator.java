@@ -58,6 +58,15 @@ public class Configurator {
         return matrix;
     }
 
+    public double[][] getOutputsMatrix(int input_count) {
+        double[][] matrix = new double[getLayersCount() + 1][];
+        matrix[0] = new double[input_count];
+        for (int i = 1; i < getLayersCount() + 1; i++) {
+            matrix[i] = new double[layers.get(i - 1)];
+        }
+        return matrix;
+    }
+
     public List<Integer> getLayers() {
         return Collections.unmodifiableList(layers);
     }
