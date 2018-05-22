@@ -1,3 +1,6 @@
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -9,7 +12,8 @@ public class Main {
 //        each number - one processing layer
 //        number -> number of neurons on the processing layer
 //        first layer - 6 neurons, second layer - 2 neurons (output layer)
-        Configurator cfg = new Configurator(new int[]{ 6, 2 });
+        Configurator cfg = new Configurator(new int[]{ 2, 4 });
+        cfg.setBias(true);
 
 //        cfg.setRange(double, double)          -- default: (-0.5, 0.5)
 //        cfg.setLearningFactor(double)         -- default: 1.0
@@ -18,35 +22,31 @@ public class Main {
 //        first: Configurator instance
 //        second: input values
 //        third: expected values
-        Perceptron perceptron = new Perceptron(cfg, new double[] { 0.5, 0.2 }, new double[] { 0.2, 0.5 });
+        Perceptron perceptron = new Perceptron(cfg, new double[] { 1d, 0d, 0d, 0d }, new double[] { 1d, 0d, 0d, 0d });
 
 
 //        Simple temporary control interface
-        int epoch = 0;
+//        System.out.println("Please click enter to start new epochs or q to quit...");
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+        DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        df.setDecimalFormatSymbols(dfs);
 
-        Scanner keyboard = new Scanner(System.in);
-        boolean next_epoch = true;
-
-        System.out.println("Please click enter to start new epochs or q to quit...");
-        while (next_epoch) {
-            String readString = keyboard.nextLine();
-            if ("q".equals(readString)) {
-                break;
-            }
-
-            for (int i = 1; i <= 10; i++) {
-                perceptron.epoch();
-                epoch++;
-            }
+        int epoch = 1;
+        while (perceptron.getAverageError() > 0.0005) {
+            perceptron.epoch();
+            epoch++;
 
             System.out.println("Epoch #" + Integer.toString(epoch) + ": ---------------------");
             int y = 0;
             for(double result : perceptron.getResults()) {
-                System.out.println("y" + Integer.toString(y) + " = " + Double.toString(result));
+                System.out.println("y" + Integer.toString(y) + " = " + df.format(result));
                 y++;
             }
+            System.out.println(Double.toString(perceptron.getAverageError()));
+            System.out.println();
         }
-        keyboard.close();
 
 
 

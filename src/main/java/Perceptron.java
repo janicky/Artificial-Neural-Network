@@ -68,7 +68,11 @@ public class Perceptron {
 
     public void epoch() {
 //        Assign input as first output
-        outputs[0] = input;
+        outputs[0] = new double[input.length + 1];
+        System.arraycopy(input, 0, outputs[0], 0, input.length);
+        outputs[0][input.length] = (cfg.isBias() ? 1 : 0);
+        System.out.println(Arrays.deepToString(weights));
+
 
 //        Iterate layers
         for (Layer layer : layers) {
@@ -78,6 +82,9 @@ public class Perceptron {
                     sum += outputs[layer.getId()][i] * weights[layer.getId()][neurone.getId()][i];
                 }
                 outputs[layer.getId() + 1][neurone.getId()] = neurone.getResult(sum);
+                if (layer.getId() < cfg.getLayersCount() - 1) {
+                    outputs[layer.getId() + 1][layer.getNeuronsCount()] = (cfg.isBias() ? 1 : 0);
+                }
             }
         }
 
@@ -118,5 +125,16 @@ public class Perceptron {
 
     public double[] getResults() {
         return results;
+    }
+
+    public double getAverageError() {
+        double sum = 0d;
+        for (int i = 0; i < results.length; i++) {
+            sum += expected[i] - results[i];
+        }
+        if (results.length == 0) {
+            return 0d;
+        }
+        return Math.abs(sum / results.length);
     }
 }

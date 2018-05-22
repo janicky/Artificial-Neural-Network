@@ -9,6 +9,7 @@ public class Configurator {
     private double range_min = -0.5;
     private double range_max = 0.5;
     private double learning_factor = 1;
+    private boolean bias = false;
     private Random random = new Random();
 
     public Configurator() {}
@@ -52,12 +53,22 @@ public class Configurator {
         return layers.size();
     }
 
+    public boolean isBias() {
+        return bias;
+    }
+
+    public void setBias(boolean bias) {
+        this.bias = bias;
+    }
+
     public double[][][] getWeightsMatrix(int input_count) {
         double[][][] matrix = new double[getLayersCount()][][];
         for(int i = 0; i < getLayersCount(); i++) {
             matrix[i] = new double[layers.get(i)][];
+//            shift for bias
+            int shift = (i < getLayersCount() - 1 ? 1 : 1);
             for (int j = 0; j < layers.get(i); j++) {
-                matrix[i][j] = new double[input_count];
+                matrix[i][j] = new double[input_count + shift];
             }
             input_count = layers.get(i);
         }
@@ -68,7 +79,9 @@ public class Configurator {
         double[][] matrix = new double[getLayersCount() + 1][];
         matrix[0] = new double[input_count];
         for (int i = 1; i < getLayersCount() + 1; i++) {
-            matrix[i] = new double[layers.get(i - 1)];
+//            shift for bias
+            int shift = (i < getLayersCount() ? 1 : 0);
+            matrix[i] = new double[layers.get(i - 1) + shift];
         }
         return matrix;
     }
