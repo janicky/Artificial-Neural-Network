@@ -1,8 +1,4 @@
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.Scanner;
+// https://github.com/janicky/Multi-Layer-Perceptron
 
 public class Main {
 
@@ -22,6 +18,7 @@ public class Main {
         cfg.setLearningFactor(0.2);
         cfg.setMomentum(0.9);
         cfg.setBias(true);
+        cfg.setInputRotation(true);
 
 //        Perceptron
 //        first: Configurator instance
@@ -31,7 +28,10 @@ public class Main {
 
 
         NetworkManager nm = new NetworkManager(perceptron, cfg);
+        nm.loadPatterns("patterns.txt");
         nm.start();
+        nm.start();
+        //nm.start();
     }
 
 

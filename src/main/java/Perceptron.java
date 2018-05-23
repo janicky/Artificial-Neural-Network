@@ -61,6 +61,14 @@ public class Perceptron {
         return neurons;
     }
 
+    public void setInput(double[] input) {
+        this.input = input;
+    }
+
+    public void setExpected(double[] expected) {
+        this.expected = expected;
+    }
+
     public void setWeight(int layer, int neurone, int weight, double value) {
         weights[layer][neurone][weight] = value;
     }

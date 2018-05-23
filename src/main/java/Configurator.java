@@ -11,6 +11,7 @@ public class Configurator {
     private double learning_factor = 1;
     private double momentum = 0;
     private boolean bias = false;
+    private boolean inputRotation = false;
     private Random random = new Random();
 
     public Configurator() {}
@@ -62,12 +63,21 @@ public class Configurator {
         this.bias = bias;
     }
 
+
     public double getMomentum() {
         return momentum;
     }
 
     public void setMomentum(double momentum) {
         this.momentum = momentum;
+    }
+
+    public boolean isInputRotation() {
+        return inputRotation;
+    }
+
+    public void setInputRotation(boolean inputRotation) {
+        this.inputRotation = inputRotation;
     }
 
     public double[][][] getWeightsMatrix(int input_count) {
