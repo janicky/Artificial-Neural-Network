@@ -17,6 +17,10 @@ public class Main {
 
 //        cfg.setRange(double, double)          -- default: (-0.5, 0.5)
 //        cfg.setLearningFactor(double)         -- default: 1.0
+//        cfg.setMomentum(double)               -- default: 0.0
+        cfg.setRange(-1d, 1d);
+        cfg.setLearningFactor(0.2);
+        cfg.setMomentum(0.9);
 
 //        Perceptron
 //        first: Configurator instance
@@ -34,6 +38,7 @@ public class Main {
         df.setDecimalFormatSymbols(dfs);
 
         int epoch = 1;
+        long start = System.nanoTime();
         while (perceptron.getAverageError() > 0.0005) {
             perceptron.epoch();
             epoch++;
@@ -47,6 +52,8 @@ public class Main {
             System.out.println(Double.toString(perceptron.getAverageError()));
             System.out.println();
         }
+
+        System.out.println("Elapsed time: " + Double.toString((double) (System.nanoTime() - start) / 1000000000.0));
 
 
 

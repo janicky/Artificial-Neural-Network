@@ -9,6 +9,7 @@ public class Perceptron {
     private double[] input;
     private double[] expected;
     private double[][][] weights;
+    private double[][][] last_delta;
     private double[][] outputs;
     private double[] results;
     private double b0;
@@ -35,6 +36,8 @@ public class Perceptron {
                 }
             }
         }
+//        Initialize last propagation array for momentum
+        last_delta = cfg.getWeightsMatrix(input.length);
 //        Prepare matrix with inputs
         outputs = cfg.getOutputsMatrix(input.length);
 //        Initialize results array
@@ -71,7 +74,6 @@ public class Perceptron {
         outputs[0] = new double[input.length + 1];
         System.arraycopy(input, 0, outputs[0], 0, input.length);
         outputs[0][input.length] = (cfg.isBias() ? 1 : 0);
-        System.out.println(Arrays.deepToString(weights));
 
 
 //        Iterate layers
@@ -120,7 +122,9 @@ public class Perceptron {
                 b += b0 * weights[l][n][i];
             }
         }
-        return -cfg.getLearningFactor() * b * outputs[l][weight];
+        last_delta[l][n][weight] = -cfg.getLearningFactor() * b * outputs[l][weight]
+                                   + cfg.getMomentum() * last_delta[l][n][weight];
+        return last_delta[l][n][weight];
     }
 
     public double[] getResults() {

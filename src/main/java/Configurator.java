@@ -9,6 +9,7 @@ public class Configurator {
     private double range_min = -0.5;
     private double range_max = 0.5;
     private double learning_factor = 1;
+    private double momentum = 0;
     private boolean bias = false;
     private Random random = new Random();
 
@@ -59,6 +60,14 @@ public class Configurator {
 
     public void setBias(boolean bias) {
         this.bias = bias;
+    }
+
+    public double getMomentum() {
+        return momentum;
+    }
+
+    public void setMomentum(double momentum) {
+        this.momentum = momentum;
     }
 
     public double[][][] getWeightsMatrix(int input_count) {
