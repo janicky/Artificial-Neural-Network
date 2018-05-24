@@ -18,7 +18,7 @@ public class Main {
         cfg.setLearningFactor(0.2);
         cfg.setMomentum(0.9);
         cfg.setBias(true);
-        cfg.setInputRotation(true);
+//        cfg.setInputRotation(true);
 
 //        Perceptron
 //        first: Configurator instance
@@ -29,7 +29,6 @@ public class Main {
 
         NetworkManager nm = new NetworkManager(perceptron, cfg);
         nm.loadPatterns("patterns.txt");
-        nm.start();
         nm.start();
         //nm.start();
     }

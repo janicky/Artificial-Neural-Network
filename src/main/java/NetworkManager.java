@@ -45,15 +45,13 @@ public class NetworkManager {
         }
     }
 
-    private void fillPatternOrder() {
-        patternsOrder.clear();
+    private void fillPatternsOrder() {
         for (int i = 0; i < inputPattern.size(); i++) {
             patternsOrder.add(i);
         }
     }
 
     private void randPatternsOrder() {
-        patternsOrder.clear();
         Random rng = new Random();
         while (patternsOrder.size() < inputPattern.size()) {
             Integer next = rng.nextInt(inputPattern.size());
@@ -61,42 +59,67 @@ public class NetworkManager {
         }
     }
 
+    private void setPatternsOrder() {
+        if (cfg.isInputRotation()) {
+            patternsOrder.clear();
+            randPatternsOrder();
+        } else if (patternsOrder.size() == 0) {
+            fillPatternsOrder();
+        }
+    }
+
+    private double[] getInputValues(int current_element) {
+        double[] output = new double[inputPattern.get(current_element).size()];
+        int i = 0;
+        for (Double out : inputPattern.get(current_element)) {
+            output[i++] = out;
+        }
+        return output;
+    }
+
+    private double[] getExpectedValues(int current_element) {
+        double[] output = new double[outputPattern.get(current_element).size()];
+        int i = 0;
+        for (Double out : outputPattern.get(current_element)) {
+            output[i++] = out;
+        }
+        return output;
+    }
+
 
     public void start() {
-        if (cfg.isInputRotation()) {
-            randPatternsOrder();
-        } else {
-            fillPatternOrder();
-        }
-
-        System.out.println(patternsOrder.toString());
-    }
-
-    public void startx() {
-//        Simple temporary control interface
-//        System.out.println("Please click enter to start new epochs or q to quit...");
-        DecimalFormat df = new DecimalFormat("#.####");
-        df.setRoundingMode(RoundingMode.CEILING);
-        DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
-        dfs.setDecimalSeparator('.');
-        df.setDecimalFormatSymbols(dfs);
+        setPatternsOrder();
 
         int epoch = 1;
-        long start = System.nanoTime();
-        while (perceptron.getAverageError() > 0.0005) {
-            perceptron.epoch();
-            epoch++;
+        Iterator<Integer> it = patternsOrder.iterator();
 
-            System.out.println("Epoch #" + Integer.toString(epoch) + ": ---------------------");
-            int y = 0;
-            for(double result : perceptron.getResults()) {
-                System.out.println("y" + Integer.toString(y) + " = " + df.format(result));
-                y++;
+        while (epoch < 1000000) {
+            if (!it.hasNext()) {
+                setPatternsOrder();
+                it = patternsOrder.iterator();
             }
-            System.out.println(Double.toString(perceptron.getAverageError()));
+
+            System.out.println("Epoch " + Integer.toString(epoch++));
+            System.out.println("--------------------------------");
+            int current_element = it.next();
+
+//            Set inputs
+            perceptron.setInput(getInputValues(current_element));
+            System.out.println("Input: " + Arrays.toString(getInputValues(current_element)));
+//            Set expected values
+            perceptron.setExpected(getExpectedValues(current_element));
+            System.out.println("Expct: " + Arrays.toString(getExpectedValues(current_element)));
+
+//            Go
+            perceptron.epoch();
+
+//            Get output
+            System.out.println("Outpt: " + Arrays.toString(perceptron.getResults()));
+
+//            Get error
+            System.out.println("e = " + Double.toString(perceptron.getAverageError()));
             System.out.println();
         }
-
-        System.out.println("Elapsed time: " + Double.toString((double) (System.nanoTime() - start) / 1000000000.0));
     }
+
 }
