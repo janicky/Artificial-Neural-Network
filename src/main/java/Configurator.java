@@ -11,15 +11,27 @@ public class Configurator {
     private double learning_factor = 1;
     private double momentum = 0;
     private boolean bias = false;
+    private int input_count;
     private boolean inputRotation = false;
     private Random random = new Random();
 
-    public Configurator() {}
+    public Configurator(int input_count) {
+        this.input_count = input_count;
+    }
 
-    public Configurator(int[] layers) {
+    public Configurator(int input_count, int[] layers) {
         for(int neurons : layers) {
             this.layers.add(neurons);
         }
+        this.input_count = input_count;
+    }
+
+    public int getInputCount() {
+        return input_count;
+    }
+
+    public void setInputCount(int input_count) {
+        this.input_count = input_count;
     }
 
     public double getRangeMin() {

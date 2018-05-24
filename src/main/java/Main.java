@@ -8,7 +8,7 @@ public class Main {
 //        each number - one processing layer
 //        number -> number of neurons on the processing layer
 //        first layer - 6 neurons, second layer - 2 neurons (output layer)
-        Configurator cfg = new Configurator(new int[]{ 2, 4 });
+        Configurator cfg = new Configurator(4, new int[]{ 2, 4 });
 
 //        cfg.setRange(double, double)          -- default: (-0.5, 0.5)
 //        cfg.setLearningFactor(double)         -- default: 1.0
@@ -24,8 +24,7 @@ public class Main {
 //        first: Configurator instance
 //        second: input values
 //        third: expected values
-        Perceptron perceptron = new Perceptron(cfg, new double[] { 1d, 0d, 0d, 0d }, new double[] { 1d, 0d, 0d, 0d });
-
+        Perceptron perceptron = new Perceptron(cfg);
 
         NetworkManager nm = new NetworkManager(perceptron, cfg);
         nm.loadPatterns("patterns.txt");

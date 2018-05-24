@@ -11,6 +11,7 @@ public class NetworkManager {
     private List<List<Double>> inputPattern = new ArrayList<>();
     private List<List<Double>> outputPattern = new ArrayList<>();
     Set<Integer> patternsOrder = new LinkedHashSet<>();
+    private double active_error = 100d;
 
     public NetworkManager(Perceptron perceptron, Configurator cfg) {
         this.perceptron = perceptron;
@@ -104,8 +105,6 @@ public class NetworkManager {
 
         int epoch = 1;
         Iterator<Integer> it = patternsOrder.iterator();
-
-        double active_error = 100d;
         double errors_sum = 0d;
 
         do {

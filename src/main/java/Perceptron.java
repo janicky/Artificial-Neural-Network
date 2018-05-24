@@ -18,10 +18,8 @@ public class Perceptron {
         LEARNING, TESTING
     }
 
-    public Perceptron(Configurator cfg, double[] input, double[] expected) {
+    public Perceptron(Configurator cfg) {
         this.cfg = cfg;
-        this.input = input;
-        this.expected = expected;
         initialize();
     }
 
@@ -31,7 +29,7 @@ public class Perceptron {
             layers.add(new Layer(generateNeurons(neurons)));
         }
 //        Prepare weights matrix
-        weights = cfg.getWeightsMatrix(input.length);
+        weights = cfg.getWeightsMatrix(cfg.getInputCount());
 //        Rand weights
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
@@ -41,9 +39,9 @@ public class Perceptron {
             }
         }
 //        Initialize last propagation array for momentum
-        last_delta = cfg.getWeightsMatrix(input.length);
+        last_delta = cfg.getWeightsMatrix(cfg.getInputCount());
 //        Prepare matrix with inputs
-        outputs = cfg.getOutputsMatrix(input.length);
+        outputs = cfg.getOutputsMatrix(cfg.getInputCount());
 //        Initialize results array
         results = new double[layers.get(layers.size() - 1).getNeuronsCount()];
     }
