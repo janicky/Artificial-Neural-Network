@@ -86,15 +86,32 @@ public class NetworkManager {
         return output;
     }
 
+    private double[] getClassified(double[] values) {
+        double[] classified = new double[values.length];
+        int i = 0;
+        for (double d : values) {
+            if (d >= 0.5) {
+                classified[i++] = 1d;
+            } else {
+                classified[i++] = 0d;
+            }
+        }
+        return classified;
+    }
 
-    public void start() {
+    public void learn() {
         setPatternsOrder();
 
         int epoch = 1;
         Iterator<Integer> it = patternsOrder.iterator();
 
-        while (epoch < 1000000) {
+        double active_error = 100d;
+        double errors_sum = 0d;
+
+        do {
             if (!it.hasNext()) {
+                active_error = errors_sum / (double) patternsOrder.size();
+                errors_sum = 0d;
                 setPatternsOrder();
                 it = patternsOrder.iterator();
             }
@@ -111,7 +128,46 @@ public class NetworkManager {
             System.out.println("Expct: " + Arrays.toString(getExpectedValues(current_element)));
 
 //            Go
-            perceptron.epoch();
+            perceptron.epoch(Perceptron.Mode.LEARNING);
+
+//            Get output
+            System.out.println("Outpt: " + Arrays.toString(perceptron.getResults()));
+
+//            Get error
+            System.out.println("e  = " + Double.toString(perceptron.getAverageError()));
+            System.out.println("ge = " + Double.toString(active_error));
+            System.out.println();
+
+            errors_sum += perceptron.getAverageError();
+
+        } while (epoch < 100000);
+    }
+
+    public void test() {
+
+        for (int i = 0; i < outputPattern.size(); i++) {
+            System.out.println("Pattern #" + Integer.toString(i));
+            System.out.println("--------------------------------");
+
+//            Set inputs
+            perceptron.setInput(getInputValues(i));
+            System.out.println("Input: " + Arrays.toString(getInputValues(i)));
+//            Set expected values
+            perceptron.setExpected(getExpectedValues(i));
+            System.out.println("Expct: " + Arrays.toString(getExpectedValues(i)));
+
+//            Go
+            perceptron.epoch(Perceptron.Mode.TESTING);
+
+//            Get classified
+            if (Arrays.equals(getExpectedValues(i), getClassified(perceptron.getResults()))) {
+                System.out.print("\033[0;32m");
+            } else {
+                System.out.print("\033[0;31m");
+            }
+            System.out.println("Outpt: " + Arrays.toString(getClassified(perceptron.getResults())));
+            System.out.print("\033[0m");
+
 
 //            Get output
             System.out.println("Outpt: " + Arrays.toString(perceptron.getResults()));

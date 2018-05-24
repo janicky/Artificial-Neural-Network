@@ -14,6 +14,10 @@ public class Perceptron {
     private double[] results;
     private double b0;
 
+    public enum Mode {
+        LEARNING, TESTING
+    }
+
     public Perceptron(Configurator cfg, double[] input, double[] expected) {
         this.cfg = cfg;
         this.input = input;
@@ -77,7 +81,7 @@ public class Perceptron {
         return weights;
     }
 
-    public void epoch() {
+    public void epoch(Mode mode) {
 //        Assign input as first output
         outputs[0] = new double[input.length + 1];
         System.arraycopy(input, 0, outputs[0], 0, input.length);
@@ -99,7 +103,9 @@ public class Perceptron {
         }
 
 //        Call Backpropagation
-        backpropagation();
+        if (mode == Mode.LEARNING) {
+            backpropagation();
+        }
 
 //        Assign results
         results = outputs[outputs.length - 1];

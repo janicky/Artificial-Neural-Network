@@ -14,11 +14,11 @@ public class Main {
 //        cfg.setLearningFactor(double)         -- default: 1.0
 //        cfg.setMomentum(double)               -- default: 0.0
 //        cfg.setBias(boolean)                  -- default: false
-        cfg.setRange(-1d, 1d);
+
         cfg.setLearningFactor(0.2);
         cfg.setMomentum(0.9);
         cfg.setBias(true);
-//        cfg.setInputRotation(true);
+        cfg.setInputRotation(true);
 
 //        Perceptron
 //        first: Configurator instance
@@ -29,8 +29,19 @@ public class Main {
 
         NetworkManager nm = new NetworkManager(perceptron, cfg);
         nm.loadPatterns("patterns.txt");
-        nm.start();
-        //nm.start();
+
+//        Learning
+        nm.learn();
+
+        System.out.println("==================================================");
+        System.out.println("==================================================");
+        System.out.println(" TESTING ");
+        System.out.println("==================================================");
+        System.out.println("==================================================");
+        System.out.println();
+
+//        Testing
+        nm.test();
     }
 
 
