@@ -146,7 +146,7 @@ public class Perceptron {
     public double getAverageError() {
         double sum = 0d;
         for (int i = 0; i < results.length; i++) {
-            sum += expected[i] - results[i];
+            sum += Math.abs(expected[i] - results[i]);
         }
         if (results.length == 0) {
             return 0d;

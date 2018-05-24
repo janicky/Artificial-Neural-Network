@@ -13,7 +13,12 @@ public class Configurator {
     private boolean bias = false;
     private int input_count;
     private boolean inputRotation = false;
+    private int epochs = 100000;
+    private int error_log_step = 1000;
+    private double error = 0.05;
+    private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.EPOCHS;
     private Random random = new Random();
+    private String global_error_file = "global_error.csv";
 
     public Configurator(int input_count) {
         this.input_count = input_count;
@@ -26,6 +31,14 @@ public class Configurator {
         this.input_count = input_count;
     }
 
+    public String getGlobalErrorFile() {
+        return global_error_file;
+    }
+
+    public void setGlobalErrorFile(String global_error_file) {
+        this.global_error_file = global_error_file;
+    }
+
     public int getInputCount() {
         return input_count;
     }
@@ -34,12 +47,36 @@ public class Configurator {
         this.input_count = input_count;
     }
 
-    public double getRangeMin() {
-        return range_min;
+    public int getEpochs() {
+        return epochs;
     }
 
-    public double getRangeMax() {
-        return range_max;
+    public void setEpochs(int epochs) {
+        this.epochs = epochs;
+    }
+
+    public NetworkManager.ConditionMode getCondition() {
+        return condition;
+    }
+
+    public void setCondition(NetworkManager.ConditionMode condition) {
+        this.condition = condition;
+    }
+
+    public int getErrorLogStep() {
+        return error_log_step;
+    }
+
+    public double getError() {
+        return error;
+    }
+
+    public void setError(double error) {
+        this.error = error;
+    }
+
+    public void setErrorLogStep(int error_log_step) {
+        this.error_log_step = error_log_step;
     }
 
     public void setRange(double range_min, double range_max) {

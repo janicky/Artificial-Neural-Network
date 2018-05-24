@@ -33,3 +33,6 @@ Options:
  - `setMomentum(double)` default: `(0.0)`
  - `setBias(boolean)` default: `(false)`
  - `setInputRotation(boolean)` default: `(false)`
+ - `setEpochs` default: `100 000`
+ - `setErrorLogStep` default: `1000`
+ - `setError` default: `0.05`

@@ -1,5 +1,9 @@
 import java.io.File;
+import java.io.PrintWriter;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
@@ -12,6 +16,10 @@ public class NetworkManager {
     private List<List<Double>> outputPattern = new ArrayList<>();
     Set<Integer> patternsOrder = new LinkedHashSet<>();
     private double active_error = 100d;
+
+    public enum ConditionMode {
+            ERROR, EPOCHS
+    }
 
     public NetworkManager(Configurator cfg) {
         this.cfg = cfg;
@@ -107,6 +115,16 @@ public class NetworkManager {
         Iterator<Integer> it = patternsOrder.iterator();
         double errors_sum = 0d;
 
+//        Reset global_error file
+        try {
+            File f = new File(cfg.getGlobalErrorFile());
+            PrintWriter writer = new PrintWriter(f);
+            writer.print("");
+            writer.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
         do {
             if (!it.hasNext()) {
                 active_error = errors_sum / (double) patternsOrder.size();
@@ -139,7 +157,19 @@ public class NetworkManager {
 
             errors_sum += perceptron.getAverageError();
 
-        } while (epoch < 100000);
+//            Save global error
+            if (epoch % cfg.getErrorLogStep() == 0) {
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(Integer.toString(epoch) + ",");
+                    sb.append(Double.toString(active_error) + "\n");
+                    Files.write(Paths.get(cfg.getGlobalErrorFile()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+        } while ((active_error > cfg.getError() && cfg.getCondition() == ConditionMode.ERROR) || (epoch < cfg.getEpochs() && cfg.getCondition() == ConditionMode.EPOCHS));
     }
 
     public void test() {
