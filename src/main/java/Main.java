@@ -24,9 +24,8 @@ public class Main {
 //        first: Configurator instance
 //        second: input values
 //        third: expected values
-        Perceptron perceptron = new Perceptron(cfg);
 
-        NetworkManager nm = new NetworkManager(perceptron, cfg);
+        NetworkManager nm = new NetworkManager(cfg);
         nm.loadPatterns("patterns.txt");
 
 //        Learning

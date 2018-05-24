@@ -13,9 +13,9 @@ public class NetworkManager {
     Set<Integer> patternsOrder = new LinkedHashSet<>();
     private double active_error = 100d;
 
-    public NetworkManager(Perceptron perceptron, Configurator cfg) {
-        this.perceptron = perceptron;
+    public NetworkManager(Configurator cfg) {
         this.cfg = cfg;
+        this.perceptron = new Perceptron(cfg);
     }
 
     public void loadPatterns(String patterns_path) {
