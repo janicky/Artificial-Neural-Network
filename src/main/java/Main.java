@@ -1,36 +1,33 @@
-// https://github.com/janicky/Multi-Layer-Perceptron
+import javax.swing.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    private JPanel panelMain;
+    private JTextField globalError;
+    private JCheckBox bias;
+    private JCheckBox inputRotation;
+    private JTextField learningFactor;
+    private JRadioButton modeLearning;
+    private JRadioButton modeTesting;
+    private JButton wczytajSiećButton;
+    private JButton rozpocznijButton;
+    private JTextArea textArea1;
+    private JTextField momentum;
+    private JTextField error;
+    private JTextField epochs;
+    private JRadioButton conditionError;
+    private JRadioButton conditionEpochs;
 
-        Configurator cfg = new Configurator(4, new int[]{ 2, 4 });
+    public Main() {
 
-//        cfg.setLearningFactor(0.2);
-//        cfg.setMomentum(0.9);
-        cfg.setBias(true);
-        cfg.setInputRotation(true);
-
-        NetworkManager nm = new NetworkManager(cfg);
-        nm.loadPatterns("patterns.txt");
-
-        //nm.loadNetwork();
-//        Learning
-        nm.learn();
-        nm.saveNetwork();
-
-
-        System.out.println("==================================================");
-        System.out.println("==================================================");
-        System.out.println(" TESTING ");
-        System.out.println("==================================================");
-        System.out.println("==================================================");
-        System.out.println();
-
-//        Testing
-        nm.test();
     }
 
-
-
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("App");
+        frame.setContentPane(new Main().panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800,600);
+        frame.setTitle("Multi-Layer Neural Network");
+        frame.setVisible(true);
+    }
 }
