@@ -1,6 +1,5 @@
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.*;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -8,15 +7,23 @@ public class NetworkStream {
 
     private String file_name = "network.xml";
     private Perceptron perceptron;
-    private FileOutputStream fos;
     private XMLStreamWriter writer;
+    private XMLStreamReader reader;
 
     public NetworkStream(Perceptron perceptron) {
         this.perceptron = perceptron;
     }
 
+    public String getFileName() {
+        return file_name;
+    }
+
+    public void setFileName(String file_name) {
+        this.file_name = file_name;
+    }
+
     void saveNetwork() throws XMLStreamException, IOException {
-        fos = new FileOutputStream(file_name);
+        FileOutputStream fos = new FileOutputStream(file_name);
         XMLOutputFactory xmlOutFact = XMLOutputFactory.newInstance();
         writer = xmlOutFact.createXMLStreamWriter(fos);
         writer.writeStartDocument();
@@ -26,6 +33,50 @@ public class NetworkStream {
         writer.writeEndElement();
         writer.writeEndDocument();
         writer.close();
+    }
+
+    void loadNetwork() throws XMLStreamException, IOException {
+        FileInputStream fis = new FileInputStream(file_name);
+        XMLInputFactory xmlInFact = XMLInputFactory.newInstance();
+        reader = xmlInFact.createXMLStreamReader(fis);
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            switch (eventType) {
+                case XMLStreamReader.START_ELEMENT:
+                    String elementName = reader.getLocalName();
+                    if (elementName.equals("parameter")) {
+                        __readParameter();
+                        break;
+                    }
+            }
+        }
+    }
+
+    private void __readParameter() throws XMLStreamException, IOException {
+        String name = reader.getAttributeValue(0);
+        String value = reader.getAttributeValue(1);
+        Configurator cfg = perceptron.getCfg();
+
+        switch (name) {
+            case "inputCount":
+                cfg.setInputCount(Integer.parseInt(value));
+                break;
+            case "learningFactor":
+                cfg.setLearningFactor(Double.parseDouble(value));
+                break;
+            case "momentum":
+                cfg.setMomentum(Double.parseDouble(value));
+                break;
+            case "bias":
+                cfg.setBias(Boolean.parseBoolean(value));
+                break;
+            case "inputRotation":
+                cfg.setInputRotation(Boolean.parseBoolean(value));
+                break;
+            case "error":
+                cfg.setError(Double.parseDouble(value));
+                break;
+        }
     }
 
     private void __saveParemeters() throws XMLStreamException, IOException {

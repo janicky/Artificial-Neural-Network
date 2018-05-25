@@ -217,6 +217,14 @@ public class NetworkManager {
         }
     }
 
+    public void loadNetwork() {
+        try {
+            ns.loadNetwork();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
     private void logNetwork() {
 //            Save to file
         try {
