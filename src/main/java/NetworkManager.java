@@ -200,6 +200,8 @@ public class NetworkManager {
 
         logNetwork();
 
+        boolean success = true;
+
         jar.append("\n ══════════ Tryb testowania ══════════\n");
         for (int i = 0; i < outputPattern.size(); i++) {
 
@@ -218,8 +220,16 @@ public class NetworkManager {
 
             jar.append(" e = " + Double.toString(perceptron.getAverageError()) + "\n\n");
 
+            if (!Arrays.equals(getExpectedValues(i), getClassified(perceptron.getResults()))) {
+                success = false;
+            }
+
             logLayer(i);
         }
+
+        jar.append("\n ══════════ Testowanie zostało zakończone ══════════\n");
+        jar.append(" -- Raport testowania:   " + cfg.getTestingFile() + "\n");
+        jar.append(" -- Zgodność ze wzorcem: " + (success ? "tak" : "nie") + "\n\n");
     }
 
     public void saveNetwork() {
