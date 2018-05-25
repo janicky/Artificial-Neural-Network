@@ -6,8 +6,8 @@ import java.util.Random;
 public class Configurator {
 
     private List<Integer> layers = new ArrayList<Integer>();
-    private double range_min = -0.5;
-    private double range_max = 0.5;
+    private double range_min = -1d;
+    private double range_max = 1d;
     private double learning_factor = 1;
     private double momentum = 0;
     private boolean bias = false;
@@ -16,9 +16,10 @@ public class Configurator {
     private int epochs = 100000;
     private int error_log_step = 1000;
     private double error = 0.05;
-    private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.EPOCHS;
+    private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
     private String global_error_file = "global_error.csv";
+    private String testing_file = "testing.txt";
 
     public Configurator(int input_count) {
         this.input_count = input_count;
@@ -37,6 +38,14 @@ public class Configurator {
 
     public void setGlobalErrorFile(String global_error_file) {
         this.global_error_file = global_error_file;
+    }
+
+    public String getTestingFile() {
+        return testing_file;
+    }
+
+    public void setTestingFile(String testing_file) {
+        this.testing_file = testing_file;
     }
 
     public int getInputCount() {

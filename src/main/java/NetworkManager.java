@@ -1,11 +1,8 @@
 import java.io.File;
 import java.io.PrintWriter;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 public class NetworkManager {
@@ -108,6 +105,17 @@ public class NetworkManager {
         return classified;
     }
 
+    private void resetFile(File f) {
+        try {
+            PrintWriter writer = new PrintWriter(f);
+            writer.print("");
+            writer.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
     public void learn() {
         setPatternsOrder();
 
@@ -116,14 +124,8 @@ public class NetworkManager {
         double errors_sum = 0d;
 
 //        Reset global_error file
-        try {
-            File f = new File(cfg.getGlobalErrorFile());
-            PrintWriter writer = new PrintWriter(f);
-            writer.print("");
-            writer.close();
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+        File f = new File(cfg.getGlobalErrorFile());
+        resetFile(f);
 
         do {
             if (!it.hasNext()) {
@@ -133,32 +135,22 @@ public class NetworkManager {
                 it = patternsOrder.iterator();
             }
 
-            System.out.println("Epoch " + Integer.toString(epoch++));
-            System.out.println("--------------------------------");
             int current_element = it.next();
 
 //            Set inputs
             perceptron.setInput(getInputValues(current_element));
-            System.out.println("Input: " + Arrays.toString(getInputValues(current_element)));
+
 //            Set expected values
             perceptron.setExpected(getExpectedValues(current_element));
-            System.out.println("Expct: " + Arrays.toString(getExpectedValues(current_element)));
 
 //            Go
             perceptron.epoch(Perceptron.Mode.LEARNING);
-
-//            Get output
-            System.out.println("Outpt: " + Arrays.toString(perceptron.getResults()));
-
-//            Get error
-            System.out.println("e  = " + Double.toString(perceptron.getAverageError()));
-            System.out.println("ge = " + Double.toString(active_error));
-            System.out.println();
+            System.out.println("ge = " + Double.toString(active_error) + "  [" + Integer.toString(epoch++) + "]");
 
             errors_sum += perceptron.getAverageError();
 
 //            Save global error
-            if (epoch % cfg.getErrorLogStep() == 0) {
+            if ((epoch + cfg.getErrorLogStep()) % cfg.getErrorLogStep() == 0) {
                 try {
                     StringBuilder sb = new StringBuilder();
                     sb.append(Integer.toString(epoch) + ",");
@@ -173,6 +165,12 @@ public class NetworkManager {
     }
 
     public void test() {
+
+//        Reset global_error file
+        File f = new File(cfg.getTestingFile());
+        resetFile(f);
+
+        logNetwork();
 
         for (int i = 0; i < outputPattern.size(); i++) {
             System.out.println("Pattern #" + Integer.toString(i));
@@ -204,6 +202,72 @@ public class NetworkManager {
 //            Get error
             System.out.println("e = " + Double.toString(perceptron.getAverageError()));
             System.out.println();
+
+            logLayer(i);
+        }
+    }
+
+    private void logNetwork() {
+//            Save to file
+        try {
+            StringBuilder header = new StringBuilder();
+            header.append("=========================== Multi-Layer Perceptron ===========================\n");
+            header.append("[L0] Input:        " + Integer.toString(cfg.getInputCount()) + "\n");
+            int i = 0;
+            for (i = 0; i < cfg.getLayersCount() - 1; i++) {
+                header.append("[L" + Integer.toString(i + 1) + "] Hidden:       " + Integer.toString(cfg.getLayers().get(i)) + "\n");
+
+            }
+            header.append("[L" + Integer.toString(i + 1) + "] Output:       " + Integer.toString(cfg.getLayers().get(i)) + "\n");
+
+            header.append("\n\n=============================== Output weights ===============================\n");
+            int n = 0;
+            for (double[] weights : perceptron.getWeights()[perceptron.getWeights().length - 1]) {
+                header.append("[N" + Integer.toString(n++) + "]: " + Arrays.toString(weights) + "\n");
+            }
+
+            header.append("\n\n=============================== Hidden weights ===============================\n");
+
+            for (int l = perceptron.getWeights().length - 1; l >= 0; l--) {
+                int hn = 0;
+                header.append("----------------------------------- Layer " + Integer.toString(l) + " ----------------------------------\n");
+                for (double[] weights : perceptron.getWeights()[l]) {
+                    header.append("[N" + Integer.toString(hn++) + "]: " + Arrays.toString(weights) + "\n");
+                }
+            }
+
+
+            Files.write(Paths.get(cfg.getTestingFile()), header.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void logLayer(int i) {
+//            Save to file
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n\n================================= Pattern " + Integer.toString(i) + " ==================================\n");
+            sb.append("Input:        " + Arrays.toString(getInputValues(i)) + "\n");
+            sb.append("Expected:     " + Arrays.toString(getExpectedValues(i)) + "\n");
+            sb.append("Output*:      " + Arrays.toString(getClassified(perceptron.getResults())) + "\n");
+            sb.append("Output:       " + Arrays.toString(perceptron.getResults()) + "\n");
+            sb.append("e(y) =        " + Arrays.toString(perceptron.getOutputErrors()) + "\n");
+            sb.append("e =           " + Double.toString(perceptron.getAverageError()) + "\n");
+
+            sb.append("\n=============================== Hidden outputs ===============================\n");
+
+            for (int l =  0; l < perceptron.getOutputs().length; l++) {
+                int hn = 0;
+                sb.append("----------------------------------- Layer " + Integer.toString(l) + " ----------------------------------\n");
+                sb.append(Arrays.toString(perceptron.getOutputs()[l]) + "\n");
+            }
+
+            sb.append("\n");
+
+            Files.write(Paths.get(cfg.getTestingFile()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 

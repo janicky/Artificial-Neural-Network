@@ -79,6 +79,10 @@ public class Perceptron {
         return weights;
     }
 
+    public double[][] getOutputs() {
+        return outputs;
+    }
+
     public void epoch(Mode mode) {
 //        Assign input as first output
         outputs[0] = new double[input.length + 1];
@@ -141,6 +145,14 @@ public class Perceptron {
 
     public double[] getResults() {
         return results;
+    }
+
+    public double[] getOutputErrors() {
+        double[] diff = new double[results.length];
+        for (int i = 0; i < results.length; i++) {
+            diff[i] = Math.abs(expected[i] - results[i]);
+        }
+        return diff;
     }
 
     public double getAverageError() {
