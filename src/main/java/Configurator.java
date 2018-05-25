@@ -15,7 +15,7 @@ public class Configurator {
     private boolean inputRotation = false;
     private int epochs = 100000;
     private int error_log_step = 1000;
-    private double error = 0.05;
+    private double error = 0.09;
     private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
     private String global_error_file = "global_error.csv";

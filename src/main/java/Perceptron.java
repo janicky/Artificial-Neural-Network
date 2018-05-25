@@ -83,6 +83,10 @@ public class Perceptron {
         return outputs;
     }
 
+    public Configurator getCfg() {
+        return cfg;
+    }
+
     public void epoch(Mode mode) {
 //        Assign input as first output
         outputs[0] = new double[input.length + 1];
