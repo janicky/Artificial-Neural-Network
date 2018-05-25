@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panelMain" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="720" height="432"/>
+      <xy x="20" y="20" width="720" height="455"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -204,7 +204,9 @@
                             <maximum-size width="100" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <text value=""/>
+                        </properties>
                       </component>
                       <component id="60cb5" class="javax.swing.JLabel">
                         <constraints>
@@ -309,7 +311,7 @@
                   </grid>
                 </children>
               </grid>
-              <grid id="fb32f" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="fb32f" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="20" bottom="0" right="20"/>
                 <constraints>
                   <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -329,11 +331,12 @@
                       <color color="-4473925"/>
                     </border>
                     <children>
-                      <component id="3a0dd" class="javax.swing.JButton" binding="wczytajSiećButton" default-binding="true">
+                      <component id="3a0dd" class="javax.swing.JButton" binding="buttonLoad">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
+                          <background color="-3618616"/>
                           <text value="Wczytaj sieć"/>
                         </properties>
                       </component>
@@ -342,19 +345,20 @@
                   <grid id="a8562" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none">
                       <color color="-4473925"/>
                     </border>
                     <children>
-                      <component id="1868e" class="javax.swing.JButton" binding="rozpocznijButton" default-binding="true">
+                      <component id="1868e" class="javax.swing.JButton" binding="start">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
                           <background color="-15569664"/>
+                          <foreground color="-1"/>
                           <text value="Rozpocznij"/>
                         </properties>
                       </component>
@@ -372,11 +376,12 @@
                       <color color="-4473925"/>
                     </border>
                     <children>
-                      <component id="80f5f" class="javax.swing.JButton" default-binding="true">
+                      <component id="80f5f" class="javax.swing.JButton" binding="buttonSave">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
+                          <background color="-3618616"/>
                           <text value="Zapisz sieć"/>
                         </properties>
                       </component>
@@ -385,33 +390,36 @@
                   <grid id="8684c" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none">
                       <color color="-4473925"/>
                     </border>
                     <children>
-                      <component id="e4c8e" class="javax.swing.JButton" default-binding="true">
+                      <component id="e4c8e" class="javax.swing.JButton" binding="stop">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
+                          <background color="-8912893"/>
+                          <foreground color="-1"/>
                           <text value="Zatrzymaj"/>
                         </properties>
                       </component>
                     </children>
                   </grid>
+                  <component id="e5a97" class="javax.swing.JButton" binding="loadPatterns">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-3618616"/>
+                      <text value="Wczytaj wzorce"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <component id="6c84b" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
-                <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <grid id="e21f6" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="20" bottom="0" right="20"/>
                 <constraints>
@@ -464,6 +472,28 @@
                   </grid>
                 </children>
               </grid>
+              <scrollpane id="fa7ed">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <autoscrolls value="false"/>
+                  <horizontalScrollBarPolicy value="30"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="6c84b" class="javax.swing.JTextArea" binding="output">
+                    <constraints/>
+                    <properties>
+                      <editable value="false"/>
+                      <font name="Courier New" size="12" style="0"/>
+                      <lineWrap value="false"/>
+                      <wrapStyleWord value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <component id="58827" class="javax.swing.JLabel">

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -25,32 +26,45 @@ public class NetworkManager {
         this.ns = new NetworkStream(perceptron);
     }
 
-    public void loadPatterns(String patterns_path) {
-        try {
-            File file = new File(patterns_path);
-            Scanner sc = new Scanner(file);
+    public boolean patternsLoaded() {
+        return inputPattern.size() > 0 && outputPattern.size() > 0;
+    }
 
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] patterns = line.split("\\|");
+    public String getFileName() {
+        return ns.getFileName();
+    }
+
+    public void setFileName(String file_name) {
+        ns.setFileName(file_name);
+    }
+
+    public void loadPatterns(String patterns_path) throws Exception {
+
+        File file = new File(patterns_path);
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNextLine()) {
+            String line = sc.nextLine();
+            String[] patterns = line.split("\\|");
 //                insert input pattern
-                List<Double> inlist = new ArrayList<>();
-                for (String value : patterns[0].split("\\,")) {
-                    inlist.add(Double.parseDouble(value));
-                }
-                inputPattern.add(inlist);
-//                insert output pattern
-                List<Double> oulist = new ArrayList<>();
-                for (String value : patterns[1].split("\\,")) {
-                    oulist.add(Double.parseDouble(value));
-                }
-                outputPattern.add(oulist);
+            List<Double> inlist = new ArrayList<>();
+            for (String value : patterns[0].split("\\,")) {
+                inlist.add(Double.parseDouble(value));
             }
-            sc.close();
-
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
+            inputPattern.add(inlist);
+//                insert output pattern
+            List<Double> oulist = new ArrayList<>();
+            for (String value : patterns[1].split("\\,")) {
+                oulist.add(Double.parseDouble(value));
+            }
+            outputPattern.add(oulist);
         }
+        sc.close();
+
+    }
+
+    public Perceptron getPerceptron() {
+        return perceptron;
     }
 
     private void fillPatternsOrder() {
@@ -118,7 +132,7 @@ public class NetworkManager {
 
     }
 
-    public void learn() {
+    public void learn(JTextField jtxt, JTextArea jar) {
         setPatternsOrder();
 
         int epoch = 1;
@@ -147,7 +161,7 @@ public class NetworkManager {
 
 //            Go
             perceptron.epoch(Perceptron.Mode.LEARNING);
-            System.out.println("ge = " + Double.toString(active_error) + "  [" + Integer.toString(epoch++) + "]");
+            jtxt.setText(Double.toString(active_error));
 
             errors_sum += perceptron.getAverageError();
 
@@ -163,7 +177,15 @@ public class NetworkManager {
                 }
             }
 
-        } while ((active_error > cfg.getError() && cfg.getCondition() == ConditionMode.ERROR) || (epoch < cfg.getEpochs() && cfg.getCondition() == ConditionMode.EPOCHS));
+        } while ((active_error > cfg.getError() && cfg.getCondition() == ConditionMode.ERROR && !cfg.isStop()) || (epoch < cfg.getEpochs() && cfg.getCondition() == ConditionMode.EPOCHS) && !cfg.isStop());
+
+        if (!cfg.isStop()) {
+            jar.append("\n ══════════ Nauka została zakończona ══════════\n");
+            jar.append(" -- Wykaz błędu globalnego: " + cfg.getGlobalErrorFile() + "\n");
+            jar.append(" -- Ostateczny błąd globalny: " + Double.toString(active_error) + "\n\n");
+        } else {
+            jar.append("\n ══════════ Nauka została przerwana ══════════\n");
+        }
     }
 
     public void test() {

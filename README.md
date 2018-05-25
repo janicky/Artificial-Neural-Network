@@ -31,7 +31,7 @@ Options:
  - `setRange(double, double)` default: `(-0.5, 0.5)`
  - `setLearningFactor(double)` default: `(1.0)`
  - `setMomentum(double)` default: `(0.0)`
- - `setBias(boolean)` default: `(false)`
+ - `setBias(boolean)` default: `(true)`
  - `setInputRotation(boolean)` default: `(false)`
  - `setEpochs` default: `100 000`
  - `setErrorLogStep` default: `1000`

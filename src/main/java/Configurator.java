@@ -10,7 +10,7 @@ public class Configurator {
     private double range_max = 1d;
     private double learning_factor = 1;
     private double momentum = 0;
-    private boolean bias = false;
+    private boolean bias = true;
     private int input_count;
     private boolean inputRotation = false;
     private int epochs = 100000;
@@ -18,8 +18,10 @@ public class Configurator {
     private double error = 0.05;
     private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
+    private String patterns_path = "patterns.txt";
     private String global_error_file = "global_error.csv";
     private String testing_file = "testing.txt";
+    private boolean stop = false;
 
     public Configurator(int input_count) {
         this.input_count = input_count;
@@ -35,6 +37,14 @@ public class Configurator {
         for(int neurons : layers) {
             this.layers.add(neurons);
         }
+    }
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
 
     public String getGlobalErrorFile() {
@@ -96,6 +106,14 @@ public class Configurator {
     public void setRange(double range_min, double range_max) {
         this.range_min = range_min;
         this.range_max = range_max;
+    }
+
+    public String getPatternsPath() {
+        return patterns_path;
+    }
+
+    public void setPatternsPath(String patterns_path) {
+        this.patterns_path = patterns_path;
     }
 
     public void setLearningFactor(double learning_factor) {
