@@ -39,6 +39,8 @@ public class NetworkManager {
     }
 
     public void loadPatterns(String patterns_path) throws Exception {
+        inputPattern.clear();
+        outputPattern.clear();
 
         File file = new File(patterns_path);
         Scanner sc = new Scanner(file);
