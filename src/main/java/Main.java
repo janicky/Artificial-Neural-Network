@@ -126,8 +126,8 @@ public class Main {
                     nm.learn(globalError, currentEpoch, output);
                 });
             } else {
-                nm.test(output);
                 log("Testowanie zostało rozpoczęte");
+                nm.test(output);
             }
         });
         stop.addActionListener(e -> {
