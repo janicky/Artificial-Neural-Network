@@ -13,6 +13,7 @@ public class NetworkManager {
     private List<List<Double>> outputPattern = new ArrayList<>();
     Set<Integer> patternsOrder = new LinkedHashSet<>();
     private double active_error = 100d;
+    private NetworkStream ns;
 
     public enum ConditionMode {
             ERROR, EPOCHS
@@ -21,6 +22,7 @@ public class NetworkManager {
     public NetworkManager(Configurator cfg) {
         this.cfg = cfg;
         this.perceptron = new Perceptron(cfg);
+        this.ns = new NetworkStream(perceptron);
     }
 
     public void loadPatterns(String patterns_path) {
@@ -204,6 +206,14 @@ public class NetworkManager {
             System.out.println();
 
             logLayer(i);
+        }
+    }
+
+    public void saveNetwork() {
+        try {
+            ns.saveNetwork();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
