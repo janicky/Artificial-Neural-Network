@@ -132,7 +132,7 @@ public class NetworkManager {
 
     }
 
-    public void learn(JTextField jtxt, JTextArea jar) {
+    public void learn(JTextField jtxt, JTextField jepoch, JTextArea jar) {
         setPatternsOrder();
 
         int epoch = 1;
@@ -142,6 +142,8 @@ public class NetworkManager {
 //        Reset global_error file
         File f = new File(cfg.getGlobalErrorFile());
         resetFile(f);
+
+        active_error = 100d;
 
         do {
             if (!it.hasNext()) {
@@ -162,6 +164,7 @@ public class NetworkManager {
 //            Go
             perceptron.epoch(Perceptron.Mode.LEARNING);
             jtxt.setText(Double.toString(active_error));
+            jepoch.setText(Integer.toString(epoch));
 
             errors_sum += perceptron.getAverageError();
 
@@ -176,11 +179,12 @@ public class NetworkManager {
                     System.out.println(ex.getMessage());
                 }
             }
-
+            epoch++;
         } while ((active_error > cfg.getError() && cfg.getCondition() == ConditionMode.ERROR && !cfg.isStop()) || (epoch < cfg.getEpochs() && cfg.getCondition() == ConditionMode.EPOCHS) && !cfg.isStop());
 
         if (!cfg.isStop()) {
             jar.append("\n ══════════ Nauka została zakończona ══════════\n");
+            jar.append(" -- Liczba epok: " + Integer.toString(epoch) + "\n");
             jar.append(" -- Wykaz błędu globalnego: " + cfg.getGlobalErrorFile() + "\n");
             jar.append(" -- Ostateczny błąd globalny: " + Double.toString(active_error) + "\n\n");
         } else {
@@ -188,7 +192,7 @@ public class NetworkManager {
         }
     }
 
-    public void test() {
+    public void test(JTextArea jar) {
 
 //        Reset global_error file
         File f = new File(cfg.getTestingFile());
@@ -196,36 +200,23 @@ public class NetworkManager {
 
         logNetwork();
 
+        jar.append("\n ══════════ Tryb testowania ══════════\n");
         for (int i = 0; i < outputPattern.size(); i++) {
-            System.out.println("Pattern #" + Integer.toString(i));
-            System.out.println("--------------------------------");
 
 //            Set inputs
             perceptron.setInput(getInputValues(i));
-            System.out.println("Input: " + Arrays.toString(getInputValues(i)));
+            jar.append(" Input: " + Arrays.toString(getInputValues(i)) + "\n");
 //            Set expected values
             perceptron.setExpected(getExpectedValues(i));
-            System.out.println("Expct: " + Arrays.toString(getExpectedValues(i)));
+            jar.append(" Expct: " + Arrays.toString(getExpectedValues(i)) + "\n");
 
 //            Go
             perceptron.epoch(Perceptron.Mode.TESTING);
 
 //            Get classified
-            if (Arrays.equals(getExpectedValues(i), getClassified(perceptron.getResults()))) {
-                System.out.print("\033[0;32m");
-            } else {
-                System.out.print("\033[0;31m");
-            }
-            System.out.println("Outpt: " + Arrays.toString(getClassified(perceptron.getResults())));
-            System.out.print("\033[0m");
+            jar.append(" Outpt: " + Arrays.toString(getClassified(perceptron.getResults())) + "\n");
 
-
-//            Get output
-            System.out.println("Outpt: " + Arrays.toString(perceptron.getResults()));
-
-//            Get error
-            System.out.println("e = " + Double.toString(perceptron.getAverageError()));
-            System.out.println();
+            jar.append(" e = " + Double.toString(perceptron.getAverageError()) + "\n\n");
 
             logLayer(i);
         }

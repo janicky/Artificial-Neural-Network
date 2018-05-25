@@ -25,13 +25,14 @@ public class Main {
     private JButton buttonSave;
     private JButton stop;
     private JButton loadPatterns;
+    private JTextField currentEpoch;
 
     private int mode = 0; // 0 - learn, 1 - test
 
     Configurator cfg = new Configurator(4, new int[]{ 2, 4 });
     NetworkManager nm = new NetworkManager(cfg);
     Perceptron perceptron;
-    ExecutorService service;
+    ExecutorService service = Executors.newFixedThreadPool(4);
 
     public Main() {
         DefaultCaret caret = (DefaultCaret) output.getCaret();
@@ -117,14 +118,15 @@ public class Main {
             }
             if (mode == 0) {
                 log("Nauka została rozpoczęta");
-                perceptron.initialize();
                 cfg.setStop(false);
+                service.shutdownNow();
                 service = Executors.newFixedThreadPool(4);
+                perceptron.initialize();
                 service.submit(() -> {
-                    nm.learn(globalError, output);
+                    nm.learn(globalError, currentEpoch, output);
                 });
             } else {
-                nm.test();
+                nm.test(output);
                 log("Testowanie zostało rozpoczęte");
             }
         });

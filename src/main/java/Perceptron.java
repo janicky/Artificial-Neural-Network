@@ -31,8 +31,6 @@ public class Perceptron {
             layers.add(new Layer(generateNeurons(neurons)));
         }
 
-
-
 //        Prepare weights matrix
         weights = cfg.getWeightsMatrix(cfg.getInputCount());
 //        Rand weights

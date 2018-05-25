@@ -14,7 +14,7 @@ public class Configurator {
     private int input_count;
     private boolean inputRotation = false;
     private int epochs = 100000;
-    private int error_log_step = 1000;
+    private int error_log_step = 500;
     private double error = 0.05;
     private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
