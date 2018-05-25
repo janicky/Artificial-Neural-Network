@@ -2,6 +2,9 @@ import javax.xml.stream.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class NetworkStream {
 
@@ -48,6 +51,10 @@ public class NetworkStream {
                         __readParameter();
                         break;
                     }
+                    if (elementName.equals("weights")) {
+                        __readLayers();
+                        break;
+                    }
             }
         }
     }
@@ -77,6 +84,78 @@ public class NetworkStream {
                 cfg.setError(Double.parseDouble(value));
                 break;
         }
+    }
+
+    private void __readLayers() throws XMLStreamException {
+        List<List<List<Double>>> dimensions = new ArrayList<>();
+
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            switch (eventType) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (reader.getLocalName().equals("layer")) {
+                        dimensions.add(__readNeurons());
+                    }
+            }
+        }
+
+        double[][][] weights = new double[dimensions.size()][][];
+        int[] layers = new int[dimensions.size()];
+
+        for (int l = 0; l < dimensions.size(); l++) {
+            List<List<Double>> layer = dimensions.get(l);
+            weights[l] = new double[layer.size()][];
+            for (int n = 0; n < layer.size(); n++) {
+                List<Double> neurone = layer.get(n);
+                weights[l][n] = new double[neurone.size()];
+                for (int w = 0; w < neurone.size(); w++) {
+                    weights[l][n][w] = neurone.get(w);
+                }
+            }
+        }
+
+        for (int l = 0; l < dimensions.size(); l++) {
+            layers[l] = dimensions.get(l).size();
+        }
+
+        Configurator cfg = perceptron.getCfg();
+        cfg.rebuildNetwork(layers);
+        perceptron.initialize();
+        perceptron.setWeights(weights);
+    }
+
+    private List<List<Double>> __readNeurons() throws XMLStreamException {
+        List<List<Double>> output = new ArrayList<>();
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            switch (eventType) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (reader.getLocalName().equals("neurone")) {
+                        output.add(__readWeights());
+                        break;
+                    }
+                case XMLStreamReader.END_ELEMENT:
+                    return output;
+            }
+        }
+        return output;
+    }
+
+    private List<Double> __readWeights() throws XMLStreamException {
+        List<Double> output = new ArrayList<>();
+        while (reader.hasNext()) {
+            int eventType = reader.next();
+            switch (eventType) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (reader.getLocalName().equals("weight")) {
+                        output.add(Double.parseDouble(reader.getElementText()));
+                        break;
+                    }
+                case XMLStreamReader.END_ELEMENT:
+                    return output;
+            }
+        }
+        return output;
     }
 
     private void __saveParemeters() throws XMLStreamException, IOException {

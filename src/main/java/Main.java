@@ -14,10 +14,10 @@ public class Main {
         NetworkManager nm = new NetworkManager(cfg);
         nm.loadPatterns("patterns.txt");
 
-        nm.loadNetwork();
+        //nm.loadNetwork();
 //        Learning
-//        nm.learn();
-        //nm.saveNetwork();
+        nm.learn();
+        nm.saveNetwork();
 
 
         System.out.println("==================================================");

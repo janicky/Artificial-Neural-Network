@@ -5,7 +5,7 @@ import java.util.List;
 public class Perceptron {
 
     private Configurator cfg;
-    private List<Layer> layers = new ArrayList<Layer>();
+    private List<Layer> layers = new ArrayList<>();
     private double[] input;
     private double[] expected;
     private double[][][] weights;
@@ -23,11 +23,16 @@ public class Perceptron {
         initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
 //        Initialize layers with neurons
+        Layer.resetIndex();
+        layers.clear();
         for (int neurons : cfg.getLayers()) {
             layers.add(new Layer(generateNeurons(neurons)));
         }
+
+
+
 //        Prepare weights matrix
         weights = cfg.getWeightsMatrix(cfg.getInputCount());
 //        Rand weights
@@ -77,6 +82,10 @@ public class Perceptron {
 
     public double[][][] getWeights() {
         return weights;
+    }
+
+    public void setWeights(double[][][] weights) {
+        this.weights = weights;
     }
 
     public double[][] getOutputs() {

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Configurator {
 
-    private List<Integer> layers = new ArrayList<Integer>();
+    private List<Integer> layers = new ArrayList<>();
     private double range_min = -1d;
     private double range_max = 1d;
     private double learning_factor = 1;
@@ -15,7 +15,7 @@ public class Configurator {
     private boolean inputRotation = false;
     private int epochs = 100000;
     private int error_log_step = 1000;
-    private double error = 0.09;
+    private double error = 0.05;
     private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
     private String global_error_file = "global_error.csv";
@@ -26,10 +26,15 @@ public class Configurator {
     }
 
     public Configurator(int input_count, int[] layers) {
+        this.input_count = input_count;
+        rebuildNetwork(layers);
+    }
+
+    public void rebuildNetwork(int[] layers) {
+        this.layers.clear();
         for(int neurons : layers) {
             this.layers.add(neurons);
         }
-        this.input_count = input_count;
     }
 
     public String getGlobalErrorFile() {
