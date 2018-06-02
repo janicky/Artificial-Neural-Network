@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class NetworkManager {
@@ -110,14 +111,25 @@ public class NetworkManager {
         return output;
     }
 
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
     private double[] getClassified(double[] values) {
         double[] classified = new double[values.length];
         int i = 0;
         for (double d : values) {
-            if (d >= 0.5) {
-                classified[i++] = 1d;
-            } else {
+            if (Math.abs(0 - d) < 0.25) {
                 classified[i++] = 0d;
+            } else if (Math.abs(0.5 - d) < 0.25) {
+                classified[i++] = 0.5d;
+            } else if (Math.abs(1.0 - d) < 0.25) {
+                classified[i++] = 1d;
             }
         }
         return classified;
@@ -134,7 +146,7 @@ public class NetworkManager {
 
     }
 
-    public void learn(JTextField jtxt, JTextField jepoch, JTextArea jar) {
+    public void learn(JTextField jtxt, JTextField jepoch, JTextArea jar, JTextField lf) {
         setPatternsOrder();
 
         int epoch = 1;
@@ -149,10 +161,22 @@ public class NetworkManager {
 
         do {
             if (!it.hasNext()) {
-                active_error = errors_sum / (double) patternsOrder.size();
+                //active_error = errors_sum / (double) patternsOrder.size();
+                active_error = errors_sum / patternsOrder.size();
                 errors_sum = 0d;
                 setPatternsOrder();
                 it = patternsOrder.iterator();
+                epoch++;
+                if ((epoch + cfg.getErrorLogStep()) % cfg.getErrorLogStep() == 0) {
+                    try {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(Integer.toString(epoch) + ",");
+                        sb.append(Double.toString(active_error) + "\n");
+                        Files.write(Paths.get(cfg.getGlobalErrorFile()), sb.toString().getBytes(), StandardOpenOption.APPEND);
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                }
             }
 
             int current_element = it.next();
@@ -165,24 +189,18 @@ public class NetworkManager {
 
 //            Go
             perceptron.epoch(Perceptron.Mode.LEARNING);
-            jtxt.setText(Double.toString(active_error));
+            if (epoch % cfg.getErrorLogStep() == 0) {
+                jtxt.setText(Double.toString(active_error));
+            }
             jepoch.setText(Integer.toString(epoch));
 
+//            Set local max
             errors_sum += perceptron.getAverageError();
 
 //            Save global error
-            if ((epoch + cfg.getErrorLogStep()) % cfg.getErrorLogStep() == 0) {
-                try {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(Integer.toString(epoch) + ",");
-                    sb.append(Double.toString(active_error) + "\n");
-                    Files.write(Paths.get(cfg.getGlobalErrorFile()), sb.toString().getBytes(), StandardOpenOption.APPEND);
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
-            epoch++;
         } while ((active_error > cfg.getError() && cfg.getCondition() == ConditionMode.ERROR && !cfg.isStop()) || (epoch < cfg.getEpochs() && cfg.getCondition() == ConditionMode.EPOCHS) && !cfg.isStop());
+
+        jtxt.setText(Double.toString(active_error));
 
         if (!cfg.isStop()) {
             jar.append("\n ══════════ Nauka została zakończona ══════════\n");
@@ -202,7 +220,7 @@ public class NetworkManager {
 
         logNetwork();
 
-        boolean success = true;
+        int errors = 0;
 
         jar.append("\n ══════════ Tryb testowania ══════════\n");
         for (int i = 0; i < outputPattern.size(); i++) {
@@ -223,7 +241,7 @@ public class NetworkManager {
             jar.append(" e = " + Double.toString(perceptron.getAverageError()) + "\n\n");
 
             if (!Arrays.equals(getExpectedValues(i), getClassified(perceptron.getResults()))) {
-                success = false;
+                errors++;
             }
 
             logLayer(i);
@@ -231,7 +249,8 @@ public class NetworkManager {
 
         jar.append("\n ══════════ Testowanie zostało zakończone ══════════\n");
         jar.append(" -- Raport testowania:   " + cfg.getTestingFile() + "\n");
-        jar.append(" -- Zgodność ze wzorcem: " + (success ? "tak" : "nie") + "\n\n");
+        jar.append(" -- Zgodność ze wzorcem: " + (errors == 0 ? "tak" : "nie") + "\n");
+        jar.append(" -- Liczba błędów:       " + Integer.toString(errors) + "\n\n");
     }
 
     public void saveNetwork() {

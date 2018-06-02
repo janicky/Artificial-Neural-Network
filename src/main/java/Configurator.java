@@ -6,16 +6,16 @@ import java.util.Random;
 public class Configurator {
 
     private List<Integer> layers = new ArrayList<>();
-    private double range_min = -1d;
-    private double range_max = 1d;
-    private double learning_factor = 1;
-    private double momentum = 0;
+    private double range_min = -0.5d;
+    private double range_max = 0.5d;
+    private double learning_factor = 0.8;
+    private double momentum = 0.2;
     private boolean bias = true;
     private int input_count;
-    private boolean inputRotation = false;
-    private int epochs = 100000;
-    private int error_log_step = 500;
-    private double error = 0.05;
+    private boolean inputRotation = true;
+    private int epochs = 1000;
+    private int error_log_step = 10;
+    private double error = 0.01;
     private NetworkManager.ConditionMode condition = NetworkManager.ConditionMode.ERROR;
     private Random random = new Random();
     private String patterns_path = "patterns.txt";

@@ -84,7 +84,7 @@ public class Main {
         epochs.addActionListener(e -> {
             try {
                 cfg.setEpochs(Integer.parseInt(epochs.getText()));
-                log("Oczekiwany błąd ustawiony na " + epochs.getText());
+                log("Oczekiwana liczba epok ustawiona na " + epochs.getText());
             } catch (Exception ex) {
                 epochs.setText(Integer.toString(cfg.getEpochs()));
                 invalidValue();
@@ -123,8 +123,9 @@ public class Main {
                 service = Executors.newFixedThreadPool(4);
                 perceptron.initialize();
                 service.submit(() -> {
-                    nm.learn(globalError, currentEpoch, output);
+                    nm.learn(globalError, currentEpoch, output, learningFactor);
                 });
+                //nm.learn(globalError, currentEpoch, output, learningFactor);
             } else {
                 log("Testowanie zostało rozpoczęte");
                 nm.test(output);
